@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Love ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      text-align: center;
+      color: white;
+    }
+    h1 {
+      font-size: 2.8em;
+      animation: fadeIn 2s ease-in-out forwards;
+      opacity: 0;
+    }
+    h2 {
+      font-size: 2em;
+      margin-top: 20px;
+      opacity: 0;
+      animation: fadeIn 3s ease-in-out forwards;
+      animation-delay: 2s;
+    }
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -2;
+    }
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 8s infinite ease-in;
+      opacity: 0.7;
+    }
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+    @keyframes float {
+      from { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+      to { transform: translateY(-10vh) rotate(45deg); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    #reveal {
+      margin-top: 30px;
+      background: white;
+      color: #e63946;
+      font-size: 1.5em;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #reveal:hover {
+      background: #ff4d6d;
+      color: white;
+    }
+    #message {
+      display: none;
+      margin-top: 20px;
+      font-size: 2em;
+      animation: fadeIn 2s forwards;
+      position: relative;
+      z-index: 2;
+    }
+    /* Glowing Sparkle Text */
+    #big-love {
+      font-size: 2.8em;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff6a88, #ff99ac, #ffdde1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s infinite, pulse 2s infinite;
+    }
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px #fff, 0 0 20px #ff6a88, 0 0 40px #ff99ac; }
+      50% { text-shadow: 0 0 20px #fff, 0 0 40px #ff6a88, 0 0 60px #ffdde1; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    /* Fireworks Canvas */
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h1>Hey Beautiful... 💖</h1>
+    <h2>I made something just for you...</h2>
+    <button id="reveal">Click Me 😘</button>
+    <div id="message">
+      <p>Sufiyah, you are my forever, my queen 👑❤️</p>
+      <br>
+      <p id="big-love">I LOVE YOU, SUFIYAH ❤️😍</p>
+    </div>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+  <canvas id="fireworks"></canvas>
+
+  <!-- Romantic Background Music -->
+  <audio id="bg-music" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2023/03/15/audio_1a2dc85b2f.mp3?filename=romantic-background-14563.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const btn = document.getElementById('reveal');
+    const msg = document.getElementById('message');
+
+    btn.addEventListener('click', () => {
+      btn.style.display = 'none';
+      msg.style.display = 'block';
+      launchFireworks();
+    });
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      document.getElementById('hearts').appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+    setInterval(createHeart, 400);
+
+    // Ensure music plays even if autoplay is blocked
+    document.body.addEventListener('click', () => {
+      document.getElementById('bg-music').play();
+    });
+
+    // Fireworks animation
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    resizeCanvas();
+
+    window.addEventListener("resize", resizeCanvas);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    let particles = [];
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createFirework(x, y) {
+      const colors = ["#ff6a88", "#ff99ac", "#ffdde1", "#fff", "#ff4d6d"];
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          angle: random(0, Math.PI * 2),
+          speed: random(2, 6),
+          radius: 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 100
+        });
+      }
+    }
+
+    function updateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.speed *= 0.95;
+        p.life--;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+      requestAnimationFrame(updateParticles);
+    }
+
+    function launchFireworks() {
+      setInterval(() => {
+        createFirework(random(100, canvas.width - 100), random(100, canvas.height / 2));
+      }, 1000);
+      updateParticles();
+    }
+  </script>
+</body>
+</html>
